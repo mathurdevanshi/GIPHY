@@ -16,12 +16,18 @@ function createGifs(buttonName){
         method: "GET"
     })
     .then(function(response) {
-        var imageUrl = response.data[0].images.original.url;
-            console.log(response.data);
-        var gifImage = $("<img>");
-        gifImage.attr("src", imageUrl);
-        gifImage.attr("alt", "gif image");
-        $("#images").prepend(gifImage);
+        for(var i=0; i<response.data.length; i++){
+            var gifDiv=$("<div>");
+            var imageUrl = response.data[i].images.original.url;
+            var rating=response.data[i].rating;
+            var p=$("<p>").text("Rating:"+ rating);
+            var gifImage = $("<img>");
+            gifDiv.prepend(p);
+            gifImage.attr("src", imageUrl);
+            gifImage.attr("alt", "gif image");
+            $("#images").prepend(gifImage);
+            $("#images").prepend(gifDiv);
+        }
     });
 };
 // //----------------------------------------------------------------------------------------------  Handles Default Buttons
@@ -32,21 +38,15 @@ $("button").on("click", function(){
 $("#add-gifButton").on("click", function(event2){
   event2.preventDefault();
         gifItem=$("#gifphy").val();
-            console.log("gifItem",gifItem);
         gifButton =$("<button>");
-            console.log("gifButton",gifButton);
         gifCount++;
-            console.log("gifCount",gifCount);
         gifID=gifItem;
-            console.log("gifID",gifID);
         gifButton.attr("id", gifID);
         gifButton.text(gifItem);
         gifButton.on('click',function(){
-            console.log("FOCUS HERE", this.id);
             createGifs(this.id);
         });
         $("#buttons").append(gifButton);
-            console.log("New Button Added",$(gifButton).val());
         $("#gifphy").val("");
 });
 // $("#gif-button").click(createGifs(this.id), console.log("CLICK!"));
