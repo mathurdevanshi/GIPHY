@@ -4,7 +4,6 @@ var gifCount=0;
 var gifItem;
 var gifButton;
 var gifID;
-var person;
 var queryURL;
 // ///////////////////////////////////////ARRAYS///////////////////////////////////////
 // ///////////////////////////////////////FUNCTIONS////////////////////////////////////
@@ -18,16 +17,36 @@ function createGifs(buttonName){
     .then(function(response) {
         for(var i=0; i<response.data.length; i++){
             var gifDiv=$("<div>");
-            var imageUrl = response.data[i].images.original.url;
+            var imageUrl = response.data[i].images.original_still.url;
+            var imageUrl2=response.data[i].images.original.url;
             var rating=response.data[i].rating;
             var p=$("<p>").text("Rating:"+ rating);
             var gifImage = $("<img>");
             gifDiv.prepend(p);
             gifImage.attr("src", imageUrl);
+            gifImage.attr("class", "gif");
+            gifImage.attr("data-animated", imageUrl2);
+            gifImage.attr("data-still", imageUrl);
+            gifImage.attr("data-state", "still");
             gifImage.attr("alt", "gif image");
             $("#images").prepend(gifImage);
             $("#images").prepend(gifDiv);
-        }
+        };
+// //----------------------------------------------------------------------------------------------  animates or makes still
+        $(".gif").on('click', function (event) {
+            event.preventDefault();
+            var state = $(this).attr('data-state');
+            var still=$(this).attr('data-animated');
+            var animated=$(this).attr('data-still');
+            if (state=="still"){
+                $(this).attr("src", still);
+                $(this).attr("data-state", "animate");
+            }
+            else {
+                $(this).attr("src", animated);
+                $(this).attr("data-state", "still");
+            };
+        });
     });
 };
 // //----------------------------------------------------------------------------------------------  Handles Default Buttons
@@ -49,4 +68,4 @@ $("#add-gifButton").on("click", function(event2){
         $("#buttons").append(gifButton);
         $("#gifphy").val("");
 });
-// $("#gif-button").click(createGifs(this.id), console.log("CLICK!"));
+
